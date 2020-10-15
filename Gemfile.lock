@@ -3,6 +3,7 @@ GEM
   specs:
     mustermann (1.1.1)
       ruby2_keywords (~> 0.0.1)
+    mysql2 (0.5.3)
     rack (2.2.3)
     rack-protection (2.1.0)
       rack
@@ -19,6 +20,7 @@ PLATFORMS
 
 DEPENDENCIES
   bundler
+  mysql2
   sinatra
 
 BUNDLED WITH
