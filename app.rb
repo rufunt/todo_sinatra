@@ -8,6 +8,7 @@ class Todo < Sinatra::Application
     DB = Sequel.connect("mysql2://root:4791@localhost/todo") 
 
     Dir[File.join(File.dirname(__FILE__),'models','*.rb')].each { |model| require model }
+    enable :sessions
   end
 
   
@@ -103,11 +104,27 @@ class Todo < Sinatra::Application
   end
 
   get '/login/?' do
-    # show a login page 
+    if session[:user_id].nil?
+      haml :login
+    else 
+      haml :error, locals: {error: 'Please log out first'}
+    end
   end
 
   post '/login/?' do
-    # validate user
+    md5sum = Digest::Md5.hexdigest params[password]
+    user = User.first(name: params[:name], password: md5sum)
+    if user.nil?
+      haml :error, locals: {error: 'Invalid login credentials'}
+    else
+      session[user_id] = user.id
+      redirect '/'
+    end
+  end
+
+  get '/logout/?' do
+    session[:user_id] = nil
+    redirect '/login'
   end
 
 end
