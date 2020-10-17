@@ -90,11 +90,16 @@ class Todo < Sinatra::Application
   end
 
   get '/signup/?' do
-    # show signup form 
+    if session[:user_id].nil?
+      haml :signup
+    else
+      haml :error, locals: {error 'Please log out first'}
+    end
   end
 
   post '/signup/?' do
-    # save the user data
+    md5sum = Dogest::Md5.hexdigest params[:password]
+    User.create(name: params[:name], password: md5sum)
   end
 
   get '/login/?' do
