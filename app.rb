@@ -13,22 +13,44 @@ class Todo < Sinatra::Application
   
   get '/?' do
     all_lists = List.all
+    haml :lists, locals: {lists: all_lists}
   end
 
   get '/new/?' do
-    # show create list page
+    haml :new_list
   end
 
   post '/new/?' do
-    # save the list
+    user = User.first(name: session[:user_id])
+    List.new_list params[:title], params[:items], user
+    redirect request.referer
   end
 
   get '/edit/:id/?' do
-    # check user permission and show the edit page
+    list = List.first(id: params[:id])
+    can_edit = true
+
+    if list.nil?
+      can_edit = false
+    elsif list.shared_with == 'public'
+      user = User.first(id: session[:user_id])
+      permission = Permission.first(list: list, user: user)
+      if permission.nil? or permission_level == 'read_only'
+        can_edit = false
+      end
+    end
+
+    if can_edit
+      haml :edit_list, locals: {list: list}
+    else
+      haml ;error, locals: {error: 'Invalid permissions'}
+    end
   end
 
   post '/edit/?' do
-    # update the list
+    user = User.first(id: session[:user_id)]
+    List.edit_list params[:id], params[:name], params[:items], user
+    redirect request.referer
   end
 
   post '/permission/?' do
