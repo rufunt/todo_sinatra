@@ -11,6 +11,12 @@ class Todo < Sinatra::Application
     enable :sessions
   end
 
+  before do
+    if not request.path_info.split('/')[1] == 'login' and session[:user_id].nil?
+      redirect '/login'
+    end
+  end
+
   
   get '/?' do
     all_lists = List.all
@@ -44,12 +50,12 @@ class Todo < Sinatra::Application
     if can_edit
       haml :edit_list, locals: {list: list}
     else
-      haml ;error, locals: {error: 'Invalid permissions'}
+      haml :error, locals: {error: 'Invalid permissions'}
     end
   end
 
   post '/edit/?' do
-    user = User.first(id: session[:user_id)]
+    user = User.first(id: session[:user_id])
     List.edit_list params[:id], params[:name], params[:items], user
     redirect request.referer
   end
@@ -94,7 +100,7 @@ class Todo < Sinatra::Application
     if session[:user_id].nil?
       haml :signup
     else
-      haml :error, locals: {error 'Please log out first'}
+      haml :error, locals: {error: 'Please log out first'}
     end
   end
 
