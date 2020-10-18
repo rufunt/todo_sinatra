@@ -1,5 +1,6 @@
 require 'sequel'
 
+Sequel::Model.plugin :validation_helpers
 class List < Sequel::Model
   set_primary_key :id
 
@@ -38,6 +39,13 @@ class List < Sequel::Model
         i.save
       end
     end
+  end
+
+  def validate
+    super
+    validates_presence [:name, :created_at]
+    validates_unique :name
+    validates_format /\A[A-Za-z]/, :name, message: 'is not a valid name'
   end
 end
 
