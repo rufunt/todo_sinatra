@@ -11,6 +11,7 @@ GEM
     rack-protection (2.1.0)
       rack
     ruby2_keywords (0.0.2)
+    sequel (5.37.0)
     sinatra (2.1.0)
       mustermann (~> 1.0)
       rack (~> 2.2)
@@ -26,6 +27,7 @@ DEPENDENCIES
   bundler
   haml
   mysql2
+  sequel
   sinatra
 
 BUNDLED WITH

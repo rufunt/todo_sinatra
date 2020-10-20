@@ -1,12 +1,13 @@
 require 'sinatra'
-  # before do
-#   if not request.path_info.split('/')[1] == 'login' and session[:user_id].nil?
-#     redirect '/login'
-#   end
-# end
+    # before do
+    #   if !['login', 'signup'].include?(request.path_info.split('/')[1]) and session[:user_id].nil?
+    #     redirect '/login'
+    #   end
+    # end
 
-get '/?' do
-  all_lists = List.all
+get '/' do
+  user = User.first(id: session[:user_id])
+  all_lists = List.association_join(:permissions).where('permissions.user_id = ?', user.id)
   haml :lists, locals: {lists: all_lists}
 end
 

@@ -1,0 +1,6 @@
+development:
+  adapter: 'mysql2'
+  host: 'localhost'
+  database: 'todo_development'
+  user: 'root'
+  password: '4791'
